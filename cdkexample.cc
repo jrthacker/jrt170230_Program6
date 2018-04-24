@@ -1,17 +1,17 @@
 /*
- * Usage of CDK Matrix
+ * Program by: John Thacker - CS 3377.501
+ * jrt170230@utdallas.edu
+ * 
  *
- * File:   example1.cc
- * Author: Stephen Perkins
- * Email:  stephen.perkins@utdallas.edu
+ * 
  */
 
 #include <iostream>
 #include "cdk.h"
 
 
-#define MATRIX_WIDTH 4
-#define MATRIX_HEIGHT 3
+#define MATRIX_WIDTH 3
+#define MATRIX_HEIGHT 5
 #define BOX_WIDTH 15
 #define MATRIX_NAME_STRING "Test Matrix"
 
