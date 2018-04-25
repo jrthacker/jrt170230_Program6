@@ -73,11 +73,11 @@ int main()
   string magicNumber = "Magic: 0x" + outString.str();
   outString.str("");
 
-  outString  << std::dec << myHeader->versionNumber; // create version number string
+  outString  << std::dec <<  myHeader->versionNumber; // create version number string
   string versionNumber = "Version: " + outString.str();
   outString.str("");
 
-  outString  << std::dec << myHeader->numRecords; // create number count string
+  outString  << std::dec <<  myHeader->numRecords; // create number count string
   string numRecords = "NumRecords: " + outString.str(); 
   outString.str("");
 
