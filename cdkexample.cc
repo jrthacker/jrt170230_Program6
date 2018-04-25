@@ -7,16 +7,38 @@
  */
 
 #include <iostream>
+#include <fstream>
+#include <sstream>
+#include <iomanip>
+#include <stdint.h>
 #include "cdk.h"
 
 
 #define MATRIX_WIDTH 3
 #define MATRIX_HEIGHT 5
 #define BOX_WIDTH 15
-#define MATRIX_NAME_STRING "Test Matrix"
+#define MATRIX_NAME_STRING "Binary File Contents"
 
 using namespace std;
 
+class BinaryFileHeader
+{
+	public:
+
+	uint32_t magicNumber;	// should be 0xFEEDFACE
+	uint32_t versionNumber;
+	uint64_t numRecords;
+};
+
+const int maxRecordStringLength = 25;
+
+class BinaryFileRecord
+{
+	public:
+
+	uint8_t strLength;
+	char stringBuffer[maxRecordStringLength];
+};
 
 int main()
 {
@@ -33,8 +55,8 @@ int main()
   // values you choose to set for MATRIX_WIDTH and MATRIX_HEIGHT
   // above.
 
-  const char 		*rowTitles[] = {"R0", "R1", "R2", "R3", "R4", "R5"};
-  const char 		*columnTitles[] = {"C0", "C1", "C2", "C3", "C4", "C5"};
+  const char 		*rowTitles[] = {"0", "a", "b", "c", "d", "e"};
+  const char 		*columnTitles[] = {"0", "a", "b", "c", "d", "e"};
   int		boxWidths[] = {BOX_WIDTH, BOX_WIDTH, BOX_WIDTH, BOX_WIDTH, BOX_WIDTH, BOX_WIDTH};
   int		boxTypes[] = {vMIXED, vMIXED, vMIXED, vMIXED,  vMIXED,  vMIXED};
 
@@ -65,10 +87,40 @@ int main()
   /* Display the Matrix */
   drawCDKMatrix(myMatrix, true);
 
+  /* Read header from binary file */
+
+  BinaryFileHeader *myHeader = new BinaryFileHeader(); // instantiate header class
+
+  ifstream binInfile ("cs3377.bin", ios::in | ios:: binary); // create ifstream object
+
+  binInfile.read(reinterpret_cast<char *>(&myHeader->magicNumber), sizeof(myHeader->magicNumber)); // read from file
+  binInfile.read(reinterpret_cast<char *>(&myHeader->versionNumber), sizeof(myHeader->versionNumber)); // read from file
+  binInfile.read(reinterpret_cast<char *>(&myHeader->numRecords), sizeof(myHeader->numRecords)); // read from file
+
+  /* Create strings for display */
+	
+  ostringstream outString;
+
+  outString  << std::hex << myHeader->magicNumber; // create magic number string
+  string magicNumber = "Magic: 0x" + outString.str();
+  outString.str("");
+
+  outString  << std::dec << myHeader->versionNumber; // create version number string
+  string versionNumber = "Version: " + outString.str();
+  outString.str("");
+
+  outString  << std::dec << myHeader->numRecords; // create number count string
+  string numRecords = "NumRecords: " + outString.str(); 
+  outString.str("");
+
+
   /*
-   * Dipslay a message
+   * Dipslay matrix
    */
-  setCDKMatrixCell(myMatrix, 2, 2, "Test Message");
+  setCDKMatrixCell(myMatrix, 1, 1, magicNumber.c_str()); // display magic number
+  setCDKMatrixCell(myMatrix, 1, 2, versionNumber.c_str()); // display version number
+  setCDKMatrixCell(myMatrix, 1, 3, numRecords.c_str()); // display record count
+  
   drawCDKMatrix(myMatrix, true);    /* required  */
 
   /* So we can see results, pause until a key is pressed. */
