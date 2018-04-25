@@ -61,6 +61,11 @@ int main()
 
   ifstream binInfile (BINARY_FILE_NAME, ios::in | ios:: binary); // create ifstream object
 
+  if (binInfile.fail()){				// verify file is opened
+  	printf("Error opening file\n");
+	_exit(1);
+  }
+
   binInfile.read(reinterpret_cast<char *>(&myHeader->magicNumber), sizeof(myHeader->magicNumber)); // read from file
   binInfile.read(reinterpret_cast<char *>(&myHeader->versionNumber), sizeof(myHeader->versionNumber)); // read from file
   binInfile.read(reinterpret_cast<char *>(&myHeader->numRecords), sizeof(myHeader->numRecords)); // read from file
@@ -78,7 +83,9 @@ int main()
   outString.str("");
 
   outString  << std::dec <<  myHeader->numRecords; // create number count string
-  string numRecords = "NumRecords: " + outString.str(); 
+  string numRecords  = outString.str();
+  int recCount = atoi(numRecords.c_str());	// convert string to int
+  numRecords = "NumRecords: " + outString.str();
   outString.str("");
 
   // Display the header in the matrix
@@ -92,7 +99,10 @@ int main()
 
   BinaryFileRecord myRecord;
 
-  for (int i = 0; i < 4; i++) 					// loop for first four records
+  if (recCount > 4)
+  	recCount = 4; 						// only loop for 4 records
+
+  for (int i = 0; i < recCount; i++) 					// loop for up to first four records
   {
   	binInfile.read(reinterpret_cast<char *>(&myRecord), sizeof(myRecord)); // read a file record
 
