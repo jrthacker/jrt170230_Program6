@@ -15,18 +15,11 @@ int main()
   CDKSCREEN	*cdkscreen;
   CDKMATRIX     *myMatrix;           // CDK Screen Matrix
 
-  // Remember that matrix starts out at 1,1.
-  // Since arrays start out at 0, the first entries
-  // below ("R0", and "C0") are just placeholders
-  // 
-  // Finally... make sure your arrays have enough entries given the
-  // values you choose to set for MATRIX_WIDTH and MATRIX_HEIGHT
-  // above.
 
-  const char 		*rowTitles[MATRIX_HEIGHT + 1] = {"0", "a", "b", "c", "d", "e"};
-  const char 		*columnTitles[MATRIX_WIDTH + 1] = {"0", "a", "b", "c"};
-  int		boxWidths[MATRIX_WIDTH + 1] = {BOX_WIDTH, BOX_WIDTH, BOX_WIDTH, BOX_WIDTH};
-  int		boxTypes[MATRIX_WIDTH + 1] = {vMIXED, vMIXED, vMIXED, vMIXED};
+  const char 	*rowTitles[] = {"0", "a", "b", "c", "d", "e"};
+  const char 	*columnTitles[] = {"0", "a", "b", "c"};
+  int		boxWidths[] = {BOX_WIDTH, BOX_WIDTH, BOX_WIDTH, BOX_WIDTH};
+  int		boxTypes[] = {vMIXED, vMIXED, vMIXED, vMIXED};
 
   /*
    * Initialize the Cdk screen.
@@ -119,6 +112,8 @@ int main()
 
   }
   drawCDKMatrix(myMatrix, true);    /* required  */
+
+  binInfile.close();
 
   /* So we can see results, pause until a key is pressed. */
   unsigned char x;
