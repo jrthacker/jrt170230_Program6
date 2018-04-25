@@ -6,39 +6,7 @@
  * 
  */
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <iomanip>
-#include <stdint.h>
-#include "cdk.h"
-
-
-#define MATRIX_WIDTH 3
-#define MATRIX_HEIGHT 5
-#define BOX_WIDTH 15
-#define MATRIX_NAME_STRING "Binary File Contents"
-
-using namespace std;
-
-class BinaryFileHeader
-{
-	public:
-
-	uint32_t magicNumber;	// should be 0xFEEDFACE
-	uint32_t versionNumber;
-	uint64_t numRecords;
-};
-
-const int maxRecordStringLength = 25;
-
-class BinaryFileRecord
-{
-	public:
-
-	uint8_t strLength;
-	char stringBuffer[maxRecordStringLength];
-};
+#include "program6.h"
 
 int main()
 {
@@ -55,10 +23,10 @@ int main()
   // values you choose to set for MATRIX_WIDTH and MATRIX_HEIGHT
   // above.
 
-  const char 		*rowTitles[] = {"0", "a", "b", "c", "d", "e"};
-  const char 		*columnTitles[] = {"0", "a", "b", "c", "d", "e"};
-  int		boxWidths[] = {BOX_WIDTH, BOX_WIDTH, BOX_WIDTH, BOX_WIDTH, BOX_WIDTH, BOX_WIDTH};
-  int		boxTypes[] = {vMIXED, vMIXED, vMIXED, vMIXED,  vMIXED,  vMIXED};
+  const char 		*rowTitles[MATRIX_HEIGHT + 1] = {"0", "a", "b", "c", "d", "e"};
+  const char 		*columnTitles[MATRIX_WIDTH + 1] = {"0", "a", "b", "c"};
+  int		boxWidths[MATRIX_WIDTH + 1] = {BOX_WIDTH, BOX_WIDTH, BOX_WIDTH, BOX_WIDTH};
+  int		boxTypes[MATRIX_WIDTH + 1] = {vMIXED, vMIXED, vMIXED, vMIXED};
 
   /*
    * Initialize the Cdk screen.
@@ -91,7 +59,7 @@ int main()
 
   BinaryFileHeader *myHeader = new BinaryFileHeader(); // instantiate header class
 
-  ifstream binInfile ("cs3377.bin", ios::in | ios:: binary); // create ifstream object
+  ifstream binInfile (BINARY_FILE_NAME, ios::in | ios:: binary); // create ifstream object
 
   binInfile.read(reinterpret_cast<char *>(&myHeader->magicNumber), sizeof(myHeader->magicNumber)); // read from file
   binInfile.read(reinterpret_cast<char *>(&myHeader->versionNumber), sizeof(myHeader->versionNumber)); // read from file
@@ -113,14 +81,33 @@ int main()
   string numRecords = "NumRecords: " + outString.str(); 
   outString.str("");
 
-
-  /*
-   * Dipslay matrix
-   */
+  // Display the header in the matrix
   setCDKMatrixCell(myMatrix, 1, 1, magicNumber.c_str()); // display magic number
   setCDKMatrixCell(myMatrix, 1, 2, versionNumber.c_str()); // display version number
   setCDKMatrixCell(myMatrix, 1, 3, numRecords.c_str()); // display record count
-  
+
+
+
+  /* Read records from file */
+
+  BinaryFileRecord myRecord;
+
+  for (int i = 0; i < 4; i++) 					// loop for first four records
+  {
+  	binInfile.read(reinterpret_cast<char *>(&myRecord), sizeof(myRecord)); // read a file record
+
+	outString << strlen(myRecord.stringBuffer);  // create string length output
+	string strlen = "strlen: " + outString.str();
+	outString.str("");
+
+	outString << myRecord.stringBuffer;		// create string output
+	string recordString = outString.str();
+	outString.str("");
+
+	setCDKMatrixCell(myMatrix, i+2, 1, strlen.c_str()); // display string length
+	setCDKMatrixCell(myMatrix, i+2, 2, recordString.c_str()); // display string record buffer
+
+  }
   drawCDKMatrix(myMatrix, true);    /* required  */
 
   /* So we can see results, pause until a key is pressed. */

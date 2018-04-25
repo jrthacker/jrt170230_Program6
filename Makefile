@@ -15,9 +15,9 @@ LDLIBS = -lcdk -lcurses
 # PROJECTNAME is a descriptive name used for the backup target
 # This should not contain spaces or special characters
 
-EXECFILE = cdkexample
+EXECFILE = program6
 
-OBJS = cdkexample.o
+OBJS = program6.o
 
 
 all: $(EXECFILE)
